@@ -4,6 +4,11 @@
   box-sizing: border-box;
   list-style-type: none;
   text-decoration: none;
+  user-select: none;
+}
+
+#root {
+  min-height: 100lvh;
 }
 
 body {
@@ -11,4 +16,32 @@ body {
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
     font-size: 16px;
+}
+
+.ant-layout {
+  position: fixed;
+  inset: 0;
+  overflow-y: auto;
+
+}
+.content {
+  padding: 16px 48px;
+  display: grid;
+  grid-template-rows: 32px 32px 1fr;
+  gap: 16px;
+}
+
+.column {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.column_content {
+  background: #dadbe5;
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
