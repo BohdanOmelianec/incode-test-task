@@ -1,6 +1,6 @@
 import React from 'react';
 import { Breadcrumb, Layout, Input, Button, Flex } from 'antd';
-import Columns from './Columns';
+import Columns from 'components/Columns';
 
 function Content() {
   return (

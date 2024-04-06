@@ -22,6 +22,7 @@
     "baseUrl": "./src",
     "paths": {
       "components/*": ["components/*"],
+      "appTypes/*": ["appTypes/*"],
     },
   },
   "include": [

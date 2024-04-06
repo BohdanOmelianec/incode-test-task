@@ -38,10 +38,10 @@ body {
 }
 
 .column_content {
-  background: #dadbe5;
+  background: #ebebeb;
   border-radius: 10px;
   padding: 16px;
-  display: flex;
+  /* display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 16px; */
 }
