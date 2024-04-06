@@ -1,4 +1,3 @@
-
 // Git Hub
 
 export interface GHUser {
@@ -28,3 +27,10 @@ export interface IColumn {
 }
 
 export type IColumns = IColumn[];
+
+// Other
+
+export interface IURLData {
+  owner: string;
+  repo: string;
+}

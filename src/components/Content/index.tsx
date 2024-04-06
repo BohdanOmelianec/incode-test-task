@@ -1,13 +1,10 @@
-import React, { useEffect } from 'react';
-import { Breadcrumb, Layout } from 'antd';
+import React from 'react';
+import { Breadcrumb, Layout, Spin } from 'antd';
 import Columns from 'components/Columns';
-import { getInProgressIssues } from 'utils/requests';
 import InputBlock from 'components/InputBlock';
 
 function Content() {
-  useEffect(() => {
-    getInProgressIssues().then((res) => console.log(res));
-  }, []);
+
   return (
     <Layout.Content className="content">
       <InputBlock />
@@ -17,7 +14,9 @@ function Content() {
         <Breadcrumb.Item>List</Breadcrumb.Item>
         <Breadcrumb.Item>App</Breadcrumb.Item>
       </Breadcrumb>
-      <Columns />
+      <React.Suspense fallback={<Spin fullscreen tip="Loading..." size='large' delay={700} />}>
+        <Columns />
+      </React.Suspense>
     </Layout.Content>
   );
 }

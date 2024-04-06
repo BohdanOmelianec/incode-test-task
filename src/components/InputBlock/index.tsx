@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { Input, Button, Space } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
+import { useSetRecoilState } from 'recoil';
+import { repoNameState } from 'atoms';
 
-const URLRegExp = /^(https:\/\/github.com\/)\w+\/\w+(\/)*$/;
+const URLRegExp = /^(https:\/\/github.com\/)[\w-]+\/[\w-]+(\/)*$/;
 
 function InputBlock() {
   const [value, setValue] = useState('');
   const [error, setError] = useState(false);
+  const setRepoName = useSetRecoilState(repoNameState);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
@@ -17,6 +20,8 @@ function InputBlock() {
   const handleSubmit = () => {
     if (!URLRegExp.test(value)) {
       setError(true);
+    } else {
+      setRepoName(value);
     }
   };
 
