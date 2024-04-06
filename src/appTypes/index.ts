@@ -1,16 +1,4 @@
 
-export interface ColumnItem {
-  id: string;
-  content: string;
-}
-
-export interface IColumn {
-  title: string;
-  items: ColumnItem[];
-}
-
-export type IColumns = IColumn[];
-
 // Git Hub
 
 export interface GHUser {
@@ -25,6 +13,18 @@ export interface RepoIssue {
   created_at: string;
   closed_at: string | null;
   title: string;
+  number: number;
+  comments: number;
+  html_url: string;
 }
 
 export type RepoIssues = RepoIssue[];
+
+// List/Columns
+
+export interface IColumn {
+  title: string;
+  items: RepoIssues;
+}
+
+export type IColumns = IColumn[];

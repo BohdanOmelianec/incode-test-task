@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Row, Col } from 'antd';
 import {
   DragDropContext,
@@ -8,19 +8,14 @@ import {
 } from 'react-beautiful-dnd';
 import ColumnTitle from '../ColumnTitle';
 import IssueCard from '../IssueCard';
-import { IColumns, ColumnItem } from 'appTypes';
-
-const getItems = (count: number) =>
-  Array.from({ length: count }, (v, k) => k).map((k) => ({
-    id: `item-${k}-${new Date().getTime()}-${Math.random()}`,
-    content: `item-${k}`,
-  }));
+import { IColumns, RepoIssues } from 'appTypes';
+import { getClosedIssues, getInProgressIssues, getNewIssues } from 'utils/requests';
 
 const getListStyle = (isDraggingOver: boolean) => ({
   background: isDraggingOver ? '#d5d5d5' : '',
 });
 
-const reorder = (list: ColumnItem[], startIndex: number, endIndex: number) => {
+const reorder = (list: RepoIssues, startIndex: number, endIndex: number) => {
   const listClone = [...list];
   const [removed] = listClone.splice(startIndex, 1);
   listClone.splice(endIndex, 0, removed);
@@ -47,13 +42,30 @@ const move = (
 };
 
 const defaultList: IColumns = [
-  { title: 'ToDo', items: getItems(7) },
-  { title: 'In Progress', items: getItems(3) },
-  { title: 'Done', items: getItems(1) },
+  { title: 'ToDo', items: [] },
+  { title: 'In Progress', items: [] },
+  { title: 'Done', items: [] },
 ];
 
 function Columns() {
   const [columnList, setColumnList] = useState<IColumns>(defaultList);
+
+  useEffect(() => {
+    (async function() {
+      const todoItems = await getNewIssues();
+      const inProgressItems = await getInProgressIssues();
+      const closedItems = await getClosedIssues();
+
+      setColumnList(prevList => {
+        const columnListClon = [...prevList];
+        columnListClon[0].items = todoItems;
+        columnListClon[1].items = inProgressItems;
+        columnListClon[2].items = closedItems;
+
+        return columnListClon;
+      })
+    })()
+  }, [])
 
   function onDragEnd(result: DropResult) {
     const { source, destination } = result;
@@ -94,7 +106,7 @@ function Columns() {
                   className="column_content"
                   style={getListStyle(snapshot.isDraggingOver)}
                 >
-                  {column.items.map((item: ColumnItem, index: number) => (
+                  {column.items.map((item, index) => (
                     <IssueCard key={item.id} item={item} index={index} />
                   ))}
                 </div>

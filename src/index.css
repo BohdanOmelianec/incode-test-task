@@ -27,7 +27,7 @@ body {
 .content {
   padding: 16px 48px;
   display: grid;
-  grid-template-rows: 32px 32px 1fr;
+  grid-template-rows: auto 32px 1fr;
   gap: 16px;
 }
 
@@ -41,7 +41,8 @@ body {
   background: #ebebeb;
   border-radius: 10px;
   padding: 16px;
-  /* display: flex;
-  flex-direction: column;
-  gap: 16px; */
+}
+
+.ant-card-head-title {
+  display: block;
 }
