@@ -1,5 +1,5 @@
 import { atom, selector } from 'recoil';
-import { URLDataExtractor } from 'utils/helpers';
+import { URLDataExtractor, breadcrumbsCreator } from 'utils/helpers';
 import { getClosedIssues, getInProgressIssues, getNewIssues } from 'utils/requests';
 import { IColumns } from 'appTypes/index';
 import { enqueueSnackbar } from 'notistack';
@@ -20,34 +20,48 @@ export const columnListState = atom({
   default: defaultList,
 });
 
+export const breadcrumbLinks = selector({
+  key: 'breadcrumbLinks',
+  get: ({ get }) => {
+    const repoURL = get(repoNameState);
+
+    return breadcrumbsCreator(repoURL);
+  },
+});
 
 export const populatedColumnList = selector({
   key: 'populatedColumnList',
 
   get: async ({ get }) => {
-    const name = get(repoNameState);
+    const repoURL = get(repoNameState);
     const list = get(columnListState);
 
-    if(name) {
-      const URLData = URLDataExtractor(name);
-      return Promise.all([getNewIssues(URLData), getInProgressIssues(URLData), getClosedIssues(URLData)])
-      .then(([todo, inProgress, closed]) => {
-        const columnList = [
-          { title: 'ToDo', items: todo || [] },
-          { title: 'In Progress', items: inProgress || [] },
-          { title: 'Done', items: closed || [] },
-        ];
+    if (repoURL) {
+      const URLData = URLDataExtractor(repoURL);
+      return Promise.all([
+        getNewIssues(URLData),
+        getInProgressIssues(URLData),
+        getClosedIssues(URLData),
+      ])
+        .then(([todo, inProgress, closed]) => {
+          const columnList = [
+            { title: 'ToDo', items: todo || [] },
+            { title: 'In Progress', items: inProgress || [] },
+            { title: 'Done', items: closed || [] },
+          ];
 
-        return columnList;
-      })
-      .catch(err => {
-        console.log(err.response.data);
-        enqueueSnackbar(err.response.data.message || 'Data not found', {variant: 'error'})
-        return list
-      })
-  
+          return columnList;
+        })
+        .catch((err) => {
+          console.log(err.response.data);
+          enqueueSnackbar(err.response.data.message || 'Data not found', {
+            variant: 'error',
+          });
 
+          return list;
+        });
     }
-    return list
-  }
+
+    return list;
+  },
 });

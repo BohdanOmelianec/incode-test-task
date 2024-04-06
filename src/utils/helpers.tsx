@@ -1,5 +1,6 @@
-import { IColumns, IURLData, RepoIssues } from "appTypes";
-import { DraggableLocation } from "react-beautiful-dnd";
+import { DraggableLocation } from 'react-beautiful-dnd';
+import { HomeOutlined, UserOutlined, FolderOpenOutlined } from '@ant-design/icons';
+import { IColumns, IURLData, RepoIssues } from 'appTypes';
 
 export const URLDataExtractor: (url: string) => IURLData = (url) => {
   const URLDataArray = url.replace('https://github.com/', '').split('/');
@@ -9,6 +10,46 @@ export const URLDataExtractor: (url: string) => IURLData = (url) => {
   };
 
   return URLData;
+};
+
+const defaultLinks = [
+  {
+    href: '',
+    title: <HomeOutlined />,
+  },
+];
+export const breadcrumbsCreator = (url: string) => {
+  if (!url) {
+    return defaultLinks;
+  }
+
+  const { href, pathname } = new URL(url);
+  const [ownerName, repoName] = pathname.split('/').filter((l) => l);
+  const owner = href.slice(0, href.lastIndexOf('/'));
+
+  const links = [
+    ...defaultLinks,
+    {
+      href: owner,
+      title: (
+        <>
+          <UserOutlined />
+          <span>{ownerName.slice(0, 1).toUpperCase() + ownerName.slice(1)}</span>
+        </>
+      ),
+    },
+    {
+      href: href,
+      title: (
+        <>
+          <FolderOpenOutlined />
+          <span>{repoName.slice(0, 1).toUpperCase() + repoName.slice(1)}</span>
+        </>
+      ),
+    },
+  ];
+
+  return links;
 };
 
 export const reorderList = (list: RepoIssues, startIndex: number, endIndex: number) => {
