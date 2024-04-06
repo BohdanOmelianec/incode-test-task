@@ -1,8 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Breadcrumb, Layout, Input, Button, Flex } from 'antd';
 import Columns from 'components/Columns';
+import { getInProgressIssues } from 'utils/requests';
 
 function Content() {
+  useEffect(() => {
+    getInProgressIssues()
+    .then(res => console.log(res))
+  }, [])
   return (
       <Layout.Content className='content'>
         <Flex gap={16}>

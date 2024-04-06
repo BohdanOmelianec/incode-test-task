@@ -1,6 +1,6 @@
 import React from 'react';
 import { Layout } from 'antd';
-import Content from 'components/Content';
+import Content from './components/Content';
 const { Header } = Layout;
 
 function App() {
