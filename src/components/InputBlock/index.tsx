@@ -1,16 +1,26 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Input, Button, Space } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { repoNameState } from 'atoms';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { columnListState, repoNameState } from 'atoms';
+import { getAllIssues } from 'utils/requests';
 
 const URLRegExp = /^(https:\/\/github.com\/)[\w-]+\/[\w-]+(\/)*$/;
 
 function InputBlock() {
-  const repoName = useRecoilValue(repoNameState)
-  const [value, setValue] = useState(repoName.name);
+  const [repoName, setRepoName] = useRecoilState(repoNameState);
+  // const setColumnList = useSetRecoilState(columnListState);
+  const [value, setValue] = useState(repoName);
   const [error, setError] = useState(false);
-  const setRepoName = useSetRecoilState(repoNameState);
+
+  // useEffect(() => {
+  //   if (repoName) {
+  //     (async () => {
+  //       const newList = await getAllIssues(repoName);
+  //       setColumnList(newList);
+  //     })();
+  //   }
+  // }, [repoName, setColumnList]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
@@ -22,7 +32,7 @@ function InputBlock() {
     if (!URLRegExp.test(value)) {
       setError(true);
     } else {
-      setRepoName({ name: value, isUpdated: true });
+      setRepoName(value);
     }
   };
 

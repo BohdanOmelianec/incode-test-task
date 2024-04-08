@@ -4,7 +4,7 @@ import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import ColumnTitle from '../ColumnTitle';
 import IssueCard from '../IssueCard';
 import { useRecoilState } from 'recoil';
-import { columnListSelector } from 'atoms';
+import { columnListState } from 'atoms';
 import { moveItem, reorderList } from 'utils/helpers';
 
 const getListStyle = (isDraggingOver: boolean) => ({
@@ -12,7 +12,7 @@ const getListStyle = (isDraggingOver: boolean) => ({
 });
 
 function Columns() {
-  const [columnList, setColumnList] = useRecoilState(columnListSelector);
+  const [columnList, setColumnList] = useRecoilState(columnListState);
 
   function onDragEnd(result: DropResult) {
     const { source, destination } = result;

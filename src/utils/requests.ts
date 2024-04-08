@@ -2,6 +2,7 @@ import { IColumns, IURLData, RepoIssues } from 'appTypes/index';
 import { axiosInstance } from 'utils/axios';
 import { URLDataExtractor } from './helpers';
 import { enqueueSnackbar } from 'notistack';
+import localForage from 'localforage';
 
 export const defaultList: IColumns = [
   { title: 'ToDo', items: [] },
@@ -31,6 +32,14 @@ export const getClosedIssues: (URLData: IURLData) => Promise<RepoIssues> = async
 };
 
 export const getAllIssues = async (repoURL: string): Promise<IColumns> => {
+  if(!repoURL) return defaultList;
+  
+  const storageValue: IColumns | null = await localForage.getItem(repoURL);
+
+  if(storageValue) {
+    return storageValue;
+  }
+
   const URLData = URLDataExtractor(repoURL);
   return Promise.all([
     getNewIssues(URLData),
@@ -38,11 +47,13 @@ export const getAllIssues = async (repoURL: string): Promise<IColumns> => {
     getClosedIssues(URLData),
   ])
     .then(([todo, inProgress, closed]) => {
-      return [
+      const newList = [
         { title: 'ToDo', items: todo || [] },
         { title: 'In Progress', items: inProgress || [] },
         { title: 'Done', items: closed || [] },
       ];
+      localForage.setItem(repoURL, newList);
+      return newList;
     })
     .catch((err) => {
       console.log(err.response.data);
