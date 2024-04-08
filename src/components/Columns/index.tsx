@@ -1,14 +1,10 @@
 import React from 'react';
 import { Row, Col } from 'antd';
-import {
-  DragDropContext,
-  Droppable,
-  DropResult,
-} from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import ColumnTitle from '../ColumnTitle';
 import IssueCard from '../IssueCard';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { columnListState, populatedColumnList } from 'atoms';
+import { useRecoilState } from 'recoil';
+import { columnListSelector } from 'atoms';
 import { moveItem, reorderList } from 'utils/helpers';
 
 const getListStyle = (isDraggingOver: boolean) => ({
@@ -16,8 +12,7 @@ const getListStyle = (isDraggingOver: boolean) => ({
 });
 
 function Columns() {
-  const setColumnList = useSetRecoilState(columnListState);
-  const populatedList = useRecoilValue(populatedColumnList);
+  const [columnList, setColumnList] = useRecoilState(columnListSelector);
 
   function onDragEnd(result: DropResult) {
     const { source, destination } = result;
@@ -30,20 +25,20 @@ function Columns() {
     const dInd = +destination.droppableId;
 
     if (sInd === dInd) {
-      const items = reorderList(populatedList[sInd].items, source.index, destination.index);
-      const columnListClone = [...populatedList];
-      columnListClone[sInd].items = items;
+      const items = reorderList(columnList[sInd].items, source.index, destination.index);
+      const columnListClone = structuredClone(columnList);
+      columnListClone![sInd].items = items;
       setColumnList(columnListClone);
     } else {
-      const result = moveItem(populatedList, source, destination);
-      setColumnList(result.filter((group) => group.items.length));
+      const result = moveItem(columnList, source, destination);
+      setColumnList(result);
     }
   }
 
   return (
     <Row gutter={16}>
       <DragDropContext onDragEnd={onDragEnd}>
-        {populatedList.map((column, index) => (
+        {columnList.map((column, index) => (
           <Droppable droppableId={`${index}`} key={index}>
             {(provided, snapshot) => (
               <Col
@@ -61,6 +56,7 @@ function Columns() {
                   {column.items.map((item, index) => (
                     <IssueCard key={item.id} item={item} index={index} />
                   ))}
+                  {provided.placeholder}
                 </div>
               </Col>
             )}

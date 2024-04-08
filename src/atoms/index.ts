@@ -1,8 +1,8 @@
 import { atom, selector } from 'recoil';
-import { URLDataExtractor, breadcrumbsCreator } from 'utils/helpers';
-import { getClosedIssues, getInProgressIssues, getNewIssues } from 'utils/requests';
+import { breadcrumbsCreator } from 'utils/helpers';
+import { getAllIssues } from 'utils/requests';
 import { IColumns } from 'appTypes/index';
-import { enqueueSnackbar } from 'notistack';
+import localForage from 'localforage';
 
 const defaultList: IColumns = [
   { title: 'ToDo', items: [] },
@@ -10,9 +10,27 @@ const defaultList: IColumns = [
   { title: 'Done', items: [] },
 ];
 
+interface RepoName {
+  name: '';
+  isUpdated: false;
+}
+
 export const repoNameState = atom({
   key: 'repoNameState',
-  default: '',
+  default: selector({
+    key: 'repoNameDefault',
+    get: async () => {
+      const storageValue: RepoName | null = await localForage.getItem('repoName');
+      return storageValue ? storageValue : { name: '', isUpdated: false };
+    },
+  }),
+  effects: [
+    ({ onSet }) => {
+      onSet((newValue) => {
+        localForage.setItem('repoName', {...newValue, isUpdated: true}); // isUpdated is true to be able to fetch data in columnListSelector while first load.
+      });
+    },
+  ],
 });
 
 export const columnListState = atom({
@@ -20,48 +38,37 @@ export const columnListState = atom({
   default: defaultList,
 });
 
-export const breadcrumbLinks = selector({
+export const breadcrumbLinksState = selector({
   key: 'breadcrumbLinks',
   get: ({ get }) => {
     const repoURL = get(repoNameState);
 
-    return breadcrumbsCreator(repoURL);
+    return breadcrumbsCreator(repoURL.name);
   },
 });
 
-export const populatedColumnList = selector({
+export const columnListSelector = selector({
   key: 'populatedColumnList',
-
   get: async ({ get }) => {
-    const repoURL = get(repoNameState);
-    const list = get(columnListState);
+    const repoName = get(repoNameState); // Get current url that was entered in the input or stored in the localForage.
+    
+    // If repoName is '' or wasn't updated from Input Block then return current list.
+    if (!repoName.name || !repoName.isUpdated) return get(columnListState);
+    const storageValue: IColumns | null = await localForage.getItem(repoName.name);
 
-    if (repoURL) {
-      const URLData = URLDataExtractor(repoURL);
-      return Promise.all([
-        getNewIssues(URLData),
-        getInProgressIssues(URLData),
-        getClosedIssues(URLData),
-      ])
-        .then(([todo, inProgress, closed]) => {
-          const columnList = [
-            { title: 'ToDo', items: todo || [] },
-            { title: 'In Progress', items: inProgress || [] },
-            { title: 'Done', items: closed || [] },
-          ];
-
-          return columnList;
-        })
-        .catch((err) => {
-          console.log(err.response.data);
-          enqueueSnackbar(err.response.data.message || 'Data not found', {
-            variant: 'error',
-          });
-
-          return list;
-        });
+    // If there is a value saved, then return it.
+    if (storageValue) {
+      return storageValue;
     }
-
-    return list;
+    // Else fetch new list with given repoName and update localForage.
+    const newList = await getAllIssues(repoName.name);
+    localForage.setItem(repoName.name, newList);
+    return newList;
+  },
+  set: ({ get, set }, newValue) => {
+    const repoName = get(repoNameState);
+    set(columnListState, newValue);
+    localForage.setItem(repoName.name, newValue);
+    set(repoNameState, { ...get(repoNameState), isUpdated: false });
   },
 });

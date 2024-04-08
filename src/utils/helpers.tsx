@@ -34,7 +34,7 @@ export const breadcrumbsCreator = (url: string) => {
       title: (
         <>
           <UserOutlined />
-          <span>{ownerName.slice(0, 1).toUpperCase() + ownerName.slice(1)}</span>
+          <span>{capitalizeFirstLetter(ownerName)}</span>
         </>
       ),
     },
@@ -43,7 +43,7 @@ export const breadcrumbsCreator = (url: string) => {
       title: (
         <>
           <FolderOpenOutlined />
-          <span>{repoName.slice(0, 1).toUpperCase() + repoName.slice(1)}</span>
+          <span>{capitalizeFirstLetter(repoName)}</span>
         </>
       ),
     },
@@ -51,6 +51,9 @@ export const breadcrumbsCreator = (url: string) => {
 
   return links;
 };
+
+export const capitalizeFirstLetter = (word: string) =>
+  word.slice(0, 1).toUpperCase() + word.slice(1);
 
 export const reorderList = (list: RepoIssues, startIndex: number, endIndex: number) => {
   const listClone = [...list];
@@ -65,12 +68,12 @@ export const moveItem = (
   droppableSource: DraggableLocation,
   droppableDestination: DraggableLocation
 ): IColumns => {
-  const columnListClone = [...columnList];
+  const columnListClone = structuredClone(columnList);
   const sourceClone = columnListClone[+droppableSource.droppableId].items;
   const destClone = columnListClone[+droppableDestination.droppableId].items;
 
-  const [removed] = sourceClone.splice(droppableSource.index, 1);
-  destClone.splice(droppableDestination.index, 0, removed);
+  const [removed] = sourceClone.splice(+droppableSource.index, 1);
+  destClone.splice(+droppableDestination.index, 0, removed);
 
   columnListClone[+droppableSource.droppableId].items = sourceClone;
   columnListClone[+droppableDestination.droppableId].items = destClone;
