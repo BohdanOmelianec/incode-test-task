@@ -10,33 +10,40 @@ export const defaultList: IColumns = [
   { title: 'Done', items: [] },
 ];
 
-export const getNewIssues: (URLData: IURLData) => Promise<RepoIssues> = async (URLData) => {
-  const { owner, repo } = URLData
+export const getNewIssues: (URLData: IURLData) => Promise<RepoIssues> = async (
+  URLData
+) => {
+  const { owner, repo } = URLData;
   return axiosInstance
     .get(`${owner}/${repo}/issues?per_page=10&state=open&assignee=none`)
-    .then((res) => res.data)
+    .then((res) => res.data);
 };
 
-export const getInProgressIssues: (URLData: IURLData) => Promise<RepoIssues> = async (URLData) => {
+export const getInProgressIssues: (URLData: IURLData) => Promise<RepoIssues> = async (
+  URLData
+) => {
   const { owner, repo } = URLData;
   return axiosInstance
     .get(`${owner}/${repo}/issues?per_page=10&state=open&assignee=*`)
-    .then((res) => res.data)
+    .then((res) => res.data);
 };
 
-export const getClosedIssues: (URLData: IURLData) => Promise<RepoIssues> = async (URLData) => {
+export const getClosedIssues: (URLData: IURLData) => Promise<RepoIssues> = async (
+  URLData
+) => {
   const { owner, repo } = URLData;
   return axiosInstance
     .get(`${owner}/${repo}/issues?per_page=10&state=closed&assignee=*`)
-    .then((res) => res.data)
+    .then((res) => res.data);
 };
 
-export const getAllIssues = async (repoURL: string): Promise<IColumns> => {
-  if(!repoURL) return defaultList;
-  
-  const storageValue: IColumns | null = await localForage.getItem(repoURL);
+export const getAllIssues = async (repoURL: string): Promise<IColumns | undefined> => {
+  if (!repoURL) return defaultList;
 
-  if(storageValue) {
+  const storageValue: IColumns | null =
+    await localForage.getItem(repoURL);
+
+  if (storageValue) {
     return storageValue;
   }
 
@@ -52,7 +59,7 @@ export const getAllIssues = async (repoURL: string): Promise<IColumns> => {
         { title: 'In Progress', items: inProgress || [] },
         { title: 'Done', items: closed || [] },
       ];
-      localForage.setItem(repoURL, newList);
+
       return newList;
     })
     .catch((err) => {
@@ -61,8 +68,6 @@ export const getAllIssues = async (repoURL: string): Promise<IColumns> => {
         variant: 'error',
       });
 
-      return defaultList;
+      return undefined;
     });
-}
-
-
+};
