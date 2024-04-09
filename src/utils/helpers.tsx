@@ -3,7 +3,8 @@ import { HomeOutlined, UserOutlined, FolderOpenOutlined } from '@ant-design/icon
 import { IColumns, IURLData, RepoIssues } from 'appTypes';
 
 export const URLDataExtractor: (url: string) => IURLData = (url) => {
-  const URLDataArray = url.replace('https://github.com/', '').split('/');
+  const regExp = /(https:\/\/)*github.com\//;
+  const URLDataArray = url.replace(regExp, '').split('/');
   const URLData = {
     owner: URLDataArray[0],
     repo: URLDataArray[1],
@@ -12,7 +13,7 @@ export const URLDataExtractor: (url: string) => IURLData = (url) => {
   return URLData;
 };
 
-const defaultLinks = [
+export const defaultLinks = [
   {
     href: '',
     title: <HomeOutlined />,
@@ -56,6 +57,11 @@ export const capitalizeFirstLetter = (word: string) =>
   word.slice(0, 1).toUpperCase() + word.slice(1);
 
 export const reorderList = (list: RepoIssues, startIndex: number, endIndex: number) => {
+  if (
+    !(startIndex >= 0 && startIndex <= list.length) ||
+    !(endIndex >= 0 && endIndex <= list.length)
+  )
+    return list;
   const listClone = [...list];
   const [removed] = listClone.splice(startIndex, 1);
   listClone.splice(endIndex, 0, removed);
@@ -68,7 +74,8 @@ export const moveItem = (
   droppableSource: DraggableLocation,
   droppableDestination: DraggableLocation
 ): IColumns => {
-  const columnListClone = structuredClone(columnList);
+  const columnListClone = JSON.parse(JSON.stringify(columnList));
+  // const columnListClone = structuredClone(columnList); structuredClone raises an Error (ReferenceError: structuredClone is not defined) while testing
   const sourceClone = columnListClone[+droppableSource.droppableId].items;
   const destClone = columnListClone[+droppableDestination.droppableId].items;
 

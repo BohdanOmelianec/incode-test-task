@@ -3,22 +3,14 @@ import { Layout } from 'antd';
 import { RecoilRoot } from 'recoil';
 import { SnackbarProvider } from 'notistack';
 import Content from './components/Content';
-const { Header } = Layout;
+import AppBar from 'components/AppBar';
 
 function App() {
   return (
     <SnackbarProvider anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
       <RecoilRoot>
         <Layout style={{ height: '100%' }}>
-          <Header
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <div className="demo-logo" />
-          </Header>
-
+          <AppBar />
           <Content />
         </Layout>
       </RecoilRoot>

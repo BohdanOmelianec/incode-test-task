@@ -56,6 +56,7 @@ function InputBlock() {
       <Button
         loading={loading}
         icon={<CloudDownloadOutlined />}
+        disabled={!value}
         type="primary"
         onClick={handleSubmit}
         size="large"
