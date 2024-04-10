@@ -1,6 +1,3 @@
-// import { render, screen } from '@testing-library/react';
-// import userEvent from '@testing-library/user-event';
-import '@testing-library/jest-dom';
 import {
   URLDataExtractor,
   breadcrumbsCreator,
@@ -8,7 +5,7 @@ import {
   defaultLinks,
   moveItem,
   reorderList,
-} from './helpers';
+} from '../src/utils/helpers';
 import { IColumns, RepoIssues } from 'appTypes/index';
 
 const mockList = [
@@ -28,7 +25,7 @@ const mockList = [
 ] as IColumns;
 
 describe('Testing URLDataExtractor', () => {
-  test('correctly extracts owner and repo from a standard GitHub URL', () => {
+  test('Сorrectly extracts owner and repo from a standard GitHub URL', () => {
     const url = 'https://github.com/facebook/react';
     const expected = { owner: 'facebook', repo: 'react' };
     expect(URLDataExtractor(url)).toEqual(expected);

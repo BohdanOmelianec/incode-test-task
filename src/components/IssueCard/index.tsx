@@ -50,7 +50,7 @@ function IssueCard({ item, index }: Props) {
                 <Flex gap={8} align="center" wrap="wrap">
                   <span>Assignee</span>
                   <Flex gap={8} align='center'>
-                    <Avatar src={item.assignee.avatar_url} alt="" />{" "} 
+                    <Avatar src={item.assignee.avatar_url} alt="avatar" />{" "} 
                     <span>{item.assignee.login}</span>
                   </Flex>
                 </Flex>

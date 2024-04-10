@@ -1,17 +1,15 @@
 import React, { useState } from 'react';
 import { Input, Button, Space } from 'antd';
 import { SearchOutlined, CloudDownloadOutlined } from '@ant-design/icons';
-import { useRecoilState, useSetRecoilState } from 'recoil';
-import { columnListState, repoNameState } from 'atoms';
-import { getAllIssues } from 'utils/requests';
-import localforage from 'localforage';
 
 const URLRegExp = /^(https:\/\/github.com\/)[\w-]+\/[\w-]+(\/)*$/;
 
-function InputBlock() {
-  const [repoName, setRepoName] = useRecoilState(repoNameState);
-  const setColumnList = useSetRecoilState(columnListState);
-  const [value, setValue] = useState(repoName);
+interface Props {
+  repoName?: string;
+  getNewItems: (value: string) => Promise<void>;
+}
+function InputBlock({ repoName, getNewItems }: Props) {
+  const [value, setValue] = useState(repoName || '');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
@@ -26,13 +24,7 @@ function InputBlock() {
       setError(true);
     } else {
       setTimeout(() => setLoading(true), 200);
-      const newList = await getAllIssues(value);
-      if (newList) {
-        setRepoName(value);
-        setColumnList(newList);
-
-        await localforage.setItem('repoName', value);
-      }
+      await getNewItems(value);
       setTimeout(() => setLoading(false), 1000);
     }
   };

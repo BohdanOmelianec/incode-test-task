@@ -1,12 +1,10 @@
 import React from 'react';
 import { Breadcrumb,  } from 'antd';
-import { useRecoilValue } from 'recoil';
-import { breadcrumbLinksState } from 'atoms';
+import { Links } from 'appTypes/index';
 
-function Navigation() {
-  const breadcrumbs = useRecoilValue(breadcrumbLinksState);
+function Navigation({ items }: { items: Links }) {
   return (
-    <Breadcrumb items={breadcrumbs} />
+    <Breadcrumb items={items} />
   )
 }
 

@@ -1,6 +1,6 @@
 import { DraggableLocation } from 'react-beautiful-dnd';
 import { HomeOutlined, UserOutlined, FolderOpenOutlined } from '@ant-design/icons';
-import { IColumns, IURLData, RepoIssues } from 'appTypes';
+import { IColumns, IURLData, Links, RepoIssues } from 'appTypes';
 
 export const URLDataExtractor: (url: string) => IURLData = (url) => {
   const regExp = /(https:\/\/)*github.com\//;
@@ -13,13 +13,13 @@ export const URLDataExtractor: (url: string) => IURLData = (url) => {
   return URLData;
 };
 
-export const defaultLinks = [
+export const defaultLinks: Links = [
   {
     href: '',
     title: <HomeOutlined />,
   },
 ];
-export const breadcrumbsCreator = (url: string) => {
+export const breadcrumbsCreator = (url: string): Links => {
   if (!url) {
     return defaultLinks;
   }

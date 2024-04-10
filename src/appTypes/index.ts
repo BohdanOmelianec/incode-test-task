@@ -34,3 +34,10 @@ export interface IURLData {
   owner: string;
   repo: string;
 }
+
+export interface Link {
+  href: string;
+  title: React.ReactNode;
+}
+
+export type Links = Link[];
