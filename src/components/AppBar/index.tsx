@@ -11,9 +11,14 @@ function AppBar() {
         alignItems: 'center',
       }}
     >
-      <Flex style={{ fontSize: 24, color: 'white' }} gap={16} align='center'>
+      <Flex style={{ fontSize: 24, color: 'white' }} gap={16} align="center">
         <GithubOutlined />
-        <Typography.Title level={1} style={{ margin: 0, color: 'inherit', fontSize: 24, fontWeight: 500 }}>Kanban board</Typography.Title>
+        <Typography.Title
+          level={1}
+          style={{ margin: 0, color: 'inherit', fontSize: 24, fontWeight: 500 }}
+        >
+          Kanban board
+        </Typography.Title>
       </Flex>
     </Header>
   );

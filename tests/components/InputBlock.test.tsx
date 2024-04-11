@@ -38,12 +38,11 @@ describe('Testing InputBlock', () => {
 
     // eslint-disable-next-line testing-library/no-unnecessary-act
     act(() => {
-
       userEvent.type(inputElement, 'test');
       userEvent.click(buttonElement);
-    })
+    });
 
-    const errorElement =  screen.getByText('URL must be as');
+    const errorElement = screen.getByText('URL must be as');
     expect(errorElement).toBeInTheDocument();
   });
 });

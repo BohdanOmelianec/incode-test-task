@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "types": ["vitest/globals"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -24,11 +20,8 @@
     "paths": {
       "components/*": ["components/*"],
       "appTypes/*": ["appTypes/*"],
-      "utils/*": ["utils/*"],
-    },
+      "utils/*": ["utils/*"]
+    }
   },
-  "include": [
-    "src",
-    "tests",
-  ]
+  "include": ["src", "tests"]
 }

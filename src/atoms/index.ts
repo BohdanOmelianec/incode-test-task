@@ -38,7 +38,7 @@ export const columnListState = atom({
         if (repoName) {
           localForage.setItem(repoName, newValue);
         }
-      }
+      };
       onSet((newValue) => {
         saveToStorage(newValue);
       });

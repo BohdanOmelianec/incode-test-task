@@ -54,7 +54,7 @@ export const breadcrumbsCreator = (url: string): Links => {
 };
 
 export const capitalizeFirstLetter = (word: string) =>
-  word.slice(0, 1).toUpperCase() + word.slice(1);
+  word.replace(/\b([a-z])/g, (match) => match.toUpperCase());
 
 export const reorderList = (list: RepoIssues, startIndex: number, endIndex: number) => {
   if (

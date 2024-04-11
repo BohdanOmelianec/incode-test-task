@@ -3,7 +3,10 @@ import { Avatar, Card, Divider, Flex, Typography } from 'antd';
 import { Draggable, DraggableProvidedDraggableProps } from 'react-beautiful-dnd';
 import { RepoIssue } from 'appTypes';
 
-const getItemStyle = (isDragging: boolean, draggableStyle: DraggableProvidedDraggableProps["style"]): CSSProperties => ({
+const getItemStyle = (
+  isDragging: boolean,
+  draggableStyle: DraggableProvidedDraggableProps['style']
+): CSSProperties => ({
   background: isDragging ? '#4096ff2b' : '',
   backdropFilter: 'blur(5px)',
   marginBottom: '16px',
@@ -49,12 +52,11 @@ function IssueCard({ item, index }: Props) {
               {item.assignee && (
                 <Flex gap={8} align="center" wrap="wrap">
                   <span>Assignee</span>
-                  <Flex gap={8} align='center'>
-                    <Avatar src={item.assignee.avatar_url} alt="avatar" />{" "} 
+                  <Flex gap={8} align="center">
+                    <Avatar src={item.assignee.avatar_url} alt="avatar" />{' '}
                     <span>{item.assignee.login}</span>
                   </Flex>
                 </Flex>
-                
               )}
 
               <span>Comments {item.comments}</span>

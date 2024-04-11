@@ -20,20 +20,17 @@ describe('IssueCard', () => {
     id: 23,
     avatar_url: '/avatar-url',
     login: 'Admin',
-  }
+  };
   const index = 1;
 
-  const  renderCard = (issue: RepoIssue) => {
+  const renderCard = (issue: RepoIssue) => {
     render(
       <DragDropContext onDragEnd={() => {}}>
         <Droppable droppableId={`${index}`} key={index}>
-          {() => (
-            <IssueCard item={issue} index={index} />
-          )}
-
+          {() => <IssueCard item={issue} index={index} />}
         </Droppable>
       </DragDropContext>
-    )
+    );
 
     const linkElement = screen.getByRole('link');
     const titleElement = screen.getByRole('heading');
@@ -47,27 +44,34 @@ describe('IssueCard', () => {
       openDateElement,
       closeDateElement,
       avatarElement,
-    }
-  }
+    };
+  };
 
   it('Should have correct information for new issue', () => {
     const { linkElement, titleElement, openDateElement } = renderCard(newIssue);
-    
+
     expect(linkElement).toHaveAttribute('href', newIssue.html_url);
     expect(titleElement).toHaveTextContent(newIssue.title);
     expect(openDateElement).toBeInTheDocument();
   });
-  
+
   it('Should have correct information for inProggress issue', () => {
-    const { avatarElement, openDateElement } = renderCard({ ...newIssue, assignee: user });
+    const { avatarElement, openDateElement } = renderCard({
+      ...newIssue,
+      assignee: user,
+    });
 
     expect(openDateElement).toBeInTheDocument();
     expect(avatarElement).toHaveAttribute('src', user.avatar_url);
   });
-  
+
   it('Should have correct information for closed issue', () => {
-    const { closeDateElement, avatarElement } = renderCard({ ...newIssue, closed_at: date, assignee: user });
-  
+    const { closeDateElement, avatarElement } = renderCard({
+      ...newIssue,
+      closed_at: date,
+      assignee: user,
+    });
+
     expect(closeDateElement).toBeInTheDocument();
     expect(avatarElement).toHaveAttribute('src', user.avatar_url);
   });

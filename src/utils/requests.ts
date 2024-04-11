@@ -40,8 +40,7 @@ export const getClosedIssues: (URLData: IURLData) => Promise<RepoIssues> = async
 export const getAllIssues = async (repoURL: string): Promise<IColumns | undefined> => {
   if (!repoURL) return defaultList;
 
-  const storageValue: IColumns | null =
-    await localForage.getItem(repoURL);
+  const storageValue: IColumns | null = await localForage.getItem(repoURL);
 
   if (storageValue) {
     return storageValue;
