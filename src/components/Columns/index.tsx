@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { Row, Col } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Row, Col, Spin } from 'antd';
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { columnListSelector, repoNameState } from 'atoms';
@@ -15,12 +15,15 @@ const getListStyle = (isDraggingOver: boolean) => ({
 function Columns() {
   const repoName = useRecoilValue(repoNameState);
   const [columnList, setColumnList] = useRecoilState(columnListSelector);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     (async () => {
       if (repoName) {
+        setTimeout(() => setLoading(true));
         const list = await getAllIssues(repoName);
         if (list) setColumnList(list);
+        setTimeout(() => setLoading(false), 200);
       }
     })();
   }, [repoName, setColumnList]);
@@ -75,6 +78,7 @@ function Columns() {
           </Droppable>
         ))}
       </DragDropContext>
+      <Spin spinning={loading} fullscreen size="large" />
     </Row>
   );
 }
