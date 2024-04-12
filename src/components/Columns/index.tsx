@@ -1,20 +1,31 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Row, Col } from 'antd';
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
-import ColumnTitle from '../ColumnTitle';
-import IssueCard from '../IssueCard';
-import { useRecoilState } from 'recoil';
-import { columnListState } from 'atoms';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { columnListSelector, repoNameState } from 'atoms';
+import ColumnTitle from 'components/ColumnTitle';
+import IssueCard from 'components/IssueCard';
 import { moveItem, reorderList } from 'utils/helpers';
+import { getAllIssues } from 'utils/requests';
 
 const getListStyle = (isDraggingOver: boolean) => ({
   background: isDraggingOver ? '#d5d5d5' : '',
 });
 
 function Columns() {
-  const [columnList, setColumnList] = useRecoilState(columnListState);
+  const repoName = useRecoilValue(repoNameState);
+  const [columnList, setColumnList] = useRecoilState(columnListSelector);
 
-  function onDragEnd(result: DropResult) {
+  useEffect(() => {
+    (async () => {
+      if (repoName) {
+        const list = await getAllIssues(repoName);
+        if (list) setColumnList(list);
+      }
+    })();
+  }, [repoName, setColumnList]);
+
+  const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
 
     // dropped outside the list
@@ -45,6 +56,7 @@ function Columns() {
                 sm={8}
                 xl={7}
                 className="column"
+                role="column"
                 {...provided.droppableProps}
                 ref={provided.innerRef}
               >

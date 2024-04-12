@@ -1,5 +1,5 @@
 import { IColumns, IURLData, RepoIssues } from 'appTypes/index';
-import { axiosInstance } from 'utils/axios';
+import { axiosInstance } from './axios';
 import { URLDataExtractor } from './helpers';
 import { enqueueSnackbar } from 'notistack';
 import localForage from 'localforage';
@@ -70,3 +70,8 @@ export const getAllIssues = async (repoURL: string): Promise<IColumns | undefine
       return undefined;
     });
 };
+
+export const getRepoName = async () => {
+   const storageValue: string | null = await localForage.getItem('repoName');
+   return storageValue ? storageValue : '';
+}

@@ -1,17 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Input, Button, Space } from 'antd';
 import { SearchOutlined, CloudDownloadOutlined } from '@ant-design/icons';
+import { getRepoName } from 'utils/requests';
+import { useRecoilState } from 'recoil';
+import { repoNameState } from 'atoms';
 
 const URLRegExp = /^(https:\/\/github.com\/)[\w-]+\/[\w-]+(\/)*$/;
 
-interface Props {
-  repoName?: string;
-  getNewItems: (value: string) => Promise<void>;
-}
-function InputBlock({ repoName, getNewItems }: Props) {
-  const [value, setValue] = useState(repoName || '');
-  const [loading, setLoading] = useState(false);
+function InputBlock() {
+  const [repoName, setRepoName] = useRecoilState(repoNameState);
+  const [value, setValue] = useState(repoName);
   const [error, setError] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const name = await getRepoName();
+      setRepoName(name);
+      setValue(name);
+    })();
+  }, [setRepoName]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
@@ -19,13 +26,11 @@ function InputBlock({ repoName, getNewItems }: Props) {
     setError(false);
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (!URLRegExp.test(value)) {
       setError(true);
     } else {
-      setTimeout(() => setLoading(true), 200);
-      await getNewItems(value);
-      setTimeout(() => setLoading(false), 1000);
+      setRepoName(value);
     }
   };
 
@@ -46,7 +51,6 @@ function InputBlock({ repoName, getNewItems }: Props) {
         </span>
       )}
       <Button
-        loading={loading}
         icon={<CloudDownloadOutlined />}
         disabled={!value}
         type="primary"

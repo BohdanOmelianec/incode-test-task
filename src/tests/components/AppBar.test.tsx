@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
-import AppBar from '../../src/components/AppBar';
+import AppBar from 'components/AppBar';
 
 describe('AppBar', () => {
-  it('Should render title with text "Kanban board"', () => {
+  test('Should render title with text "Kanban board"', () => {
     render(<AppBar />);
 
     const headerTitle = screen.getByRole('heading');

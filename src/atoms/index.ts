@@ -1,6 +1,5 @@
 import { atom, selector } from 'recoil';
-import { breadcrumbsCreator } from 'utils/helpers';
-import { getAllIssues } from 'utils/requests';
+import { breadcrumbsCreator } from '../utils/helpers';
 import { IColumns } from 'appTypes/index';
 import localForage from 'localforage';
 
@@ -12,38 +11,26 @@ const defaultList: IColumns = [
 
 export const repoNameState = atom({
   key: 'repoNameState',
-  default: selector({
-    key: 'repoNameDefault',
-    get: async () => {
-      const storageValue: string | null = await localForage.getItem('repoName');
-      return storageValue ? storageValue : '';
-    },
-  }),
+  default: '',
 });
 
 export const columnListState = atom({
   key: 'columnListState',
-  default: selector({
-    key: 'columnListDefault',
-    get: async ({ get }) => {
-      const newList = await getAllIssues(get(repoNameState));
-      return newList ? newList : defaultList;
-    },
-  }),
-  effects: [
-    ({ onSet }) => {
-      const saveToStorage = async (newValue: IColumns) => {
-        const repoName: string | null = await localForage.getItem('repoName');
+  default: defaultList,
+});
 
-        if (repoName) {
-          localForage.setItem(repoName, newValue);
-        }
-      };
-      onSet((newValue) => {
-        saveToStorage(newValue);
-      });
-    },
-  ],
+export const columnListSelector = selector({
+  key: 'columnListSelector',
+  get: ({ get }) => get(columnListState),
+  set: ({ set, get }, newValue) => {
+    const repoName = get(repoNameState);
+
+    if (repoName) {
+      set(columnListState, newValue);
+      localForage.setItem(repoName, newValue);
+      localForage.setItem('repoName', repoName);
+    }
+  },
 });
 
 export const breadcrumbLinksState = selector({

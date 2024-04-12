@@ -20,7 +20,8 @@
     "paths": {
       "components/*": ["components/*"],
       "appTypes/*": ["appTypes/*"],
-      "utils/*": ["utils/*"]
+      "utils/*": ["utils/*"],
+      "atoms/*": ["atoms/*"],
     }
   },
   "include": ["src", "tests"]

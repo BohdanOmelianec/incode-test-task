@@ -5,7 +5,7 @@ import {
   defaultLinks,
   moveItem,
   reorderList,
-} from '../src/utils/helpers';
+} from 'utils/helpers';
 import { IColumns, RepoIssues } from 'appTypes/index';
 
 const mockList = [
@@ -48,7 +48,7 @@ describe('Testing breadcrumbsCreator', () => {
   test('Should return an array of links with length 3 when url is valid github link', () => {
     const url = 'https://github.com/rickhanlonii/suspense';
     const result = breadcrumbsCreator(url);
-    expect(result.length).toBe(3);
+    expect(result).toHaveLength(3);
   });
 });
 

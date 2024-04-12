@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { GHUser, RepoIssue } from 'appTypes/index';
-import IssueCard from '../../src/components/IssueCard';
+import IssueCard from 'components/IssueCard';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
 describe('IssueCard', () => {

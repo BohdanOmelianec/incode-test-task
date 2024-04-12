@@ -24,14 +24,15 @@ export const breadcrumbsCreator = (url: string): Links => {
     return defaultLinks;
   }
 
-  const { href, pathname } = new URL(url);
+  const { origin, pathname } = new URL(url);
   const [ownerName, repoName] = pathname.split('/').filter((l) => l);
-  const owner = href.slice(0, href.lastIndexOf('/'));
+  const ownerLink = `${origin}/${ownerName}`;
+  const repoLink = `${origin}/${ownerName}/${repoName}`;
 
   const links = [
     ...defaultLinks,
     {
-      href: owner,
+      href: ownerLink,
       title: (
         <>
           <UserOutlined />
@@ -40,7 +41,7 @@ export const breadcrumbsCreator = (url: string): Links => {
       ),
     },
     {
-      href: href,
+      href: repoLink,
       title: (
         <>
           <FolderOpenOutlined />
