@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom';
+import { server } from '../mocks/server';
 
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
@@ -13,3 +14,7 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: vi.fn(),
   })),
 });
+
+  beforeAll(() => server.listen());
+  afterEach(() => server.resetHandlers());
+  afterAll(() => server.close());

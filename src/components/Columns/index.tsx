@@ -20,10 +20,10 @@ function Columns() {
   useEffect(() => {
     (async () => {
       if (repoName) {
-        setTimeout(() => setLoading(true));
+        setLoading(true);
         const list = await getAllIssues(repoName);
         if (list) setColumnList(list);
-        setTimeout(() => setLoading(false), 200);
+        setLoading(false);
       }
     })();
   }, [repoName, setColumnList]);
@@ -78,7 +78,7 @@ function Columns() {
           </Droppable>
         ))}
       </DragDropContext>
-      <Spin spinning={loading} fullscreen size="large" />
+      <Spin spinning={loading} fullscreen size="large" tip="Loading" />
     </Row>
   );
 }

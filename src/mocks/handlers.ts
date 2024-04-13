@@ -24,6 +24,9 @@ const defaultItems = [
 ];
 
 export const handlers = [
+  http.get('https://api.github.com/repos/facebook/testtest', () => {
+    return new HttpResponse(null, { status: 404, statusText: 'Not Found' });
+  }),
   http.get('https://api.github.com/repos/*', () => {
     return new HttpResponse(JSON.stringify(defaultItems));
   }),
