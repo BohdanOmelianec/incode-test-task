@@ -21,7 +21,7 @@
       "components/*": ["components/*"],
       "appTypes/*": ["appTypes/*"],
       "utils/*": ["utils/*"],
-      "atoms/*": ["atoms/*"],
+      "atoms/*": ["atoms/*"]
     }
   },
   "include": ["src", "tests"]

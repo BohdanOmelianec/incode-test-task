@@ -47,7 +47,7 @@ describe('IssueCard', () => {
     };
   };
 
-  it('Should have correct information for new issue', () => {
+  test('Should have correct information for new issue', () => {
     const { linkElement, titleElement, openDateElement } = renderCard(newIssue);
 
     expect(linkElement).toHaveAttribute('href', newIssue.html_url);
@@ -55,7 +55,7 @@ describe('IssueCard', () => {
     expect(openDateElement).toBeInTheDocument();
   });
 
-  it('Should have correct information for inProggress issue', () => {
+  test('Should have correct information for inProggress issue', () => {
     const { avatarElement, openDateElement } = renderCard({
       ...newIssue,
       assignee: user,

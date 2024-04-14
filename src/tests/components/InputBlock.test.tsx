@@ -19,6 +19,8 @@ describe('Testing InputBlock', () => {
       buttonElement,
     };
   };
+
+  const user = userEvent.setup();
   test('Button should be disabled if input is empty', async () => {
     const { inputElement, buttonElement } = renderInput();
 
@@ -28,10 +30,11 @@ describe('Testing InputBlock', () => {
 
   test('Button should be enabled if input has some text in it', async () => {
     const { inputElement, buttonElement } = renderInput();
+    // const user = userEvent.setup();
 
     expect(buttonElement).toBeDisabled();
 
-    userEvent.type(inputElement, 'Test');
+    await user.type(inputElement, 'Test');
 
     expect(inputElement).toHaveAttribute('value', 'Test');
     expect(buttonElement).toBeEnabled();
@@ -40,8 +43,8 @@ describe('Testing InputBlock', () => {
   test('Should show an error if input value is invalid', async () => {
     const { inputElement, buttonElement } = renderInput();
 
-    userEvent.type(inputElement, 'Test');
-    userEvent.click(buttonElement);
+    await user.type(inputElement, 'Test');
+    await user.click(buttonElement);
 
     const errorElement = await screen.findByText('URL must be as');
     expect(errorElement).toBeVisible();

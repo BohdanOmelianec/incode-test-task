@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Spin } from 'antd';
+import { Row, Col, Spin, notification } from 'antd';
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { columnListSelector, repoNameState } from 'atoms';
+import { useRecoilValue } from 'recoil';
+import { repoNameState } from 'atoms';
 import ColumnTitle from 'components/ColumnTitle';
 import IssueCard from 'components/IssueCard';
 import { moveItem, reorderList } from 'utils/helpers';
-import { getAllIssues } from 'utils/requests';
+import { defaultList, getAllIssues } from 'utils/requests';
 
 const getListStyle = (isDraggingOver: boolean) => ({
   background: isDraggingOver ? '#d5d5d5' : '',
@@ -14,19 +14,31 @@ const getListStyle = (isDraggingOver: boolean) => ({
 
 function Columns() {
   const repoName = useRecoilValue(repoNameState);
-  const [columnList, setColumnList] = useRecoilState(columnListSelector);
+  const [columnList, setColumnList] = useState(defaultList);
   const [loading, setLoading] = useState(false);
+  const [notificationApi, contextHolder] = notification.useNotification();
 
   useEffect(() => {
     (async () => {
       if (repoName) {
         setLoading(true);
-        const list = await getAllIssues(repoName);
-        if (list) setColumnList(list);
+        const { data, error } = await getAllIssues(repoName);
+
+        if (data) {
+          setColumnList(data);
+        } else {
+          notificationApi.open({
+            type: 'error',
+            message: `Error: ${error}`,
+            duration: 4,
+            placement: 'bottomRight',
+          });
+        }
+
         setLoading(false);
       }
     })();
-  }, [repoName, setColumnList]);
+  }, [repoName, notificationApi]);
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
@@ -47,10 +59,11 @@ function Columns() {
       const result = moveItem(columnList, source, destination);
       setColumnList(result);
     }
-  }
+  };
 
   return (
     <Row gutter={16}>
+      {contextHolder}
       <DragDropContext onDragEnd={onDragEnd}>
         {columnList.map((column, index) => (
           <Droppable droppableId={`${index}`} key={index}>

@@ -15,6 +15,6 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 });
 
-  beforeAll(() => server.listen());
-  afterEach(() => server.resetHandlers());
-  afterAll(() => server.close());
+beforeAll(() => server.listen());
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());

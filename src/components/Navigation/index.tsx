@@ -5,7 +5,7 @@ import { breadcrumbLinksState } from 'atoms';
 
 function Navigation() {
   const breadcrumbs = useRecoilValue(breadcrumbLinksState);
-  
+
   return <Breadcrumb items={breadcrumbs} />;
 }
 

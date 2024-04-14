@@ -1,6 +1,5 @@
-import { render, screen } from '@testing-library/react';
+import { logRoles, render, screen } from '@testing-library/react';
 import { RecoilRoot } from 'recoil';
-// import { server } from '../../mocks/server';
 import Columns from 'components/Columns';
 import { repoNameState } from 'atoms/index';
 
@@ -9,14 +8,14 @@ describe('Columns', () => {
   const link = 'https://github.com/facebook/react';
 
   test('Should render with correct title and droppable-id', async () => {
-    render(
+    const { container } = render(
       <RecoilRoot initializeState={(snapshot) => snapshot.set(repoNameState, link)}>
         <Columns />
       </RecoilRoot>
     );
 
-    const headings = await screen.findAllByRole('heading', { level: 3 });
-    const columns = await screen.findAllByRole('column');
+    const headings = screen.getAllByRole('heading', { level: 3 });
+    const columns = screen.getAllByRole('column');
 
     expect(headings).toHaveLength(3);
     headings.forEach((title, index) => {
@@ -27,5 +26,14 @@ describe('Columns', () => {
     columns.forEach((column, index) => {
       expect(column).toHaveAttribute('data-rbd-droppable-id', `${index}`);
     });
+
+    const links = await screen.findAllByRole('link');
+    expect(links).toHaveLength(6);
+    links.forEach((link, index) => {
+      expect(link).toHaveAttribute('href', `/issue${index % 2 ? 1 : 0}`);
+      expect(link).toHaveTextContent(`Test issue${index % 2 ? 1 : 0}`);
+    });
+
+    logRoles(container);
   });
 });

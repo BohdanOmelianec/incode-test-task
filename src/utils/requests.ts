@@ -1,7 +1,6 @@
 import { IColumns, IURLData, RepoIssues } from 'appTypes/index';
 import { axiosInstance } from './axios';
 import { URLDataExtractor } from './helpers';
-import { enqueueSnackbar } from 'notistack';
 import localForage from 'localforage';
 
 export const defaultList: IColumns = [
@@ -23,6 +22,7 @@ export const getInProgressIssues: (URLData: IURLData) => Promise<RepoIssues> = a
   URLData
 ) => {
   const { owner, repo } = URLData;
+  // return Promise.resolve([])
   return axiosInstance
     .get(`${owner}/${repo}/issues?per_page=10&state=open&assignee=*`)
     .then((res) => res.data);
@@ -32,20 +32,25 @@ export const getClosedIssues: (URLData: IURLData) => Promise<RepoIssues> = async
   URLData
 ) => {
   const { owner, repo } = URLData;
+  // return Promise.resolve([])
   return axiosInstance
     .get(`${owner}/${repo}/issues?per_page=10&state=closed&assignee=*`)
     .then((res) => res.data);
 };
 
-export const getAllIssues = async (repoURL: string): Promise<IColumns | undefined> => {
-  if (!repoURL) return defaultList;
+type ReturnedValue = { data?: IColumns; error?: string };
 
+export const getAllIssues = async (repoURL: string): Promise<ReturnedValue> => {
+  if (!repoURL) return { data: defaultList };
+
+  // Checking value in a storage before making a request
   const storageValue: IColumns | null = await localForage.getItem(repoURL);
 
   if (storageValue) {
-    return storageValue;
+    return { data: storageValue };
   }
 
+  // Otherwise make a GET request to get list of issues for particular repo
   const URLData = URLDataExtractor(repoURL);
   return Promise.all([
     getNewIssues(URLData),
@@ -59,19 +64,17 @@ export const getAllIssues = async (repoURL: string): Promise<IColumns | undefine
         { title: 'Done', items: closed || [] },
       ];
 
-      return newList;
+      // Saving data to the storage
+      localForage.setItem(repoURL, newList);
+      localForage.setItem('repoName', repoURL);
+      return { data: newList };
     })
     .catch((err) => {
-      console.log(err.response.data);
-      enqueueSnackbar(err.response.data.message || 'Data not found', {
-        variant: 'error',
-      });
-
-      return undefined;
+      return { error: err?.response?.data?.message || 'Data not found' };
     });
 };
 
 export const getRepoName = async () => {
-   const storageValue: string | null = await localForage.getItem('repoName');
-   return storageValue ? storageValue : '';
-}
+  const storageValue: string | null = await localForage.getItem('repoName');
+  return storageValue ? storageValue : '';
+};

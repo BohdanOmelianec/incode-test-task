@@ -15,7 +15,7 @@ export const URLDataExtractor: (url: string) => IURLData = (url) => {
 
 export const defaultLinks: Links = [
   {
-    href: '',
+    href: '/',
     title: <HomeOutlined />,
   },
 ];
